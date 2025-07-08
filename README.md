@@ -60,4 +60,3 @@ For questions or help, open an issue on GitHub or join the community Discord:
 ## License
 
 MIT © 2025 Russell Purinton
-# subtitles
