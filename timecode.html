@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Timecode Overlay</title>
+    <link rel="stylesheet" href="timecode.css">
+</head>
+
+<body>
+    <div id="timecode"></div>
+    <script>function pad(num, size = 2) {
+            let s = String(num);
+            while (s.length < size) s = '0' + s;
+            return s;
+        }
+
+        function getISOTimestampWithMs(date) {
+            // YYYY-MM-DDTHH:MM:SS.mmm
+            return date.getFullYear() +
+                '-' + pad(date.getMonth() + 1) +
+                '-' + pad(date.getDate()) +
+                'T' + pad(date.getHours()) +
+                ':' + pad(date.getMinutes()) +
+                ':' + pad(date.getSeconds()) +
+                '.' + pad(date.getMilliseconds(), 3);
+        }
+
+        const timecodeDiv = document.getElementById('timecode');
+
+        function updateTime() {
+            const now = new Date();
+            timecodeDiv.textContent = getISOTimestampWithMs(now);
+        }
+
+        setInterval(updateTime, 1000 / 30);
+        updateTime();
+    </script>
+</body>
+
+</html>
