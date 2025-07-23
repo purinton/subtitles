@@ -20,7 +20,7 @@
             bottom: 2vh;
             display: flex;
             align-items: center;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 0.5em;
             padding: 0.2em 0.7em 0.2em 0.5em;
             color: #fff;
@@ -31,27 +31,37 @@
             text-shadow: 0 0 8px #000, 0 0 2px #fff;
             user-select: none;
         }
+
         .rec-dot {
             width: 0.8em;
             height: 0.8em;
             border-radius: 50%;
             background: #f00;
-            margin-right: 0.5em;
+            margin-left: 0.5em;
             box-shadow: 0 0 8px #f00;
             animation: blink 1s steps(1) infinite;
             flex-shrink: 0;
         }
+
         @keyframes blink {
-            0%, 50% { opacity: 1; }
-            50.01%, 100% { opacity: 0; }
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            50.01%,
+            100% {
+                opacity: 0;
+            }
         }
     </style>
 </head>
 
 <body>
     <div id="timecode">
-        <span class="rec-dot"></span>
         <span id="timecode-text"></span>
+        <span class="rec-dot"></span>
     </div>
     <script>
         function pad(num, size = 2) {
