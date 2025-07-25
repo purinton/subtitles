@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Height Comparison Tool</title>
+    <style>
+        body {
+            background: #181a20;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100vw;
+            max-width: 1200px;
+            height: 70vh;
+            margin-top: 32px;
+        }
+
+        .person {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            width: 300px;
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .person-img-wrapper {
+            width: 100%;
+            flex: 1 1 auto;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            min-height: 100px;
+            height: 100%;
+        }
+
+        .person img {
+            display: block;
+            position: relative;
+            width: auto;
+            height: var(--img-height, 300px);
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px #222);
+            z-index: 1;
+            margin-bottom: 0;
+        }
+
+        .dropdown {
+            margin-top: 20px;
+            background: #222;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            outline: none;
+            margin-bottom: 0;
+        }
+
+        .label {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+            }
+
+            .person {
+                width: 80vw;
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="margin-top:64px; margin-bottom:64px;"></h1>
+    <div class="container">
+        <div class="person" id="female-container">
+            <div class="person-img-wrapper">
+                <img id="female-img" src="assets/female.png" alt="Female Silhouette">
+            </div>
+            <select class="dropdown" id="female-height"></select>
+        </div>
+        <div class="person" id="male-container">
+            <div class="person-img-wrapper">
+                <img id="male-img" src="assets/male.png" alt="Male Silhouette">
+            </div>
+            <select class="dropdown" id="male-height"></select>
+        </div>
+    </div>
+    <script>
+        // Height range: 3'0 to 8'0 in 1 inch increments
+        function generateHeights() {
+            const heights = [];
+            for (let feet = 3; feet <= 8; feet++) {
+                for (let inch = 0; inch < 12; inch++) {
+                    if (feet === 8 && inch > 0) break;
+                    heights.push(`${feet}'${inch}`);
+                }
+            }
+            return heights;
+        }
+
+        function heightToInches(heightStr) {
+            const [feet, inch] = heightStr.split("'");
+            return parseInt(feet) * 12 + parseInt(inch);
+        }
+
+        // Actual image pixel heights
+        const MALE_IMG_PX = 969;
+        const FEMALE_IMG_PX = 894;
+        const BASE_HEIGHT_INCHES = 67; // 5'7"
+
+        function setImageHeight(img, heightStr, basePx) {
+            const inches = heightToInches(heightStr);
+            // Scale relative to container height (person-img-wrapper)
+            // Use basePx for 5'7" as reference, but cap at container height
+            const container = img.closest('.person-img-wrapper');
+            const containerHeight = container.offsetHeight || 400;
+            const px = Math.max(60, Math.round((inches / BASE_HEIGHT_INCHES) * containerHeight));
+            img.style.setProperty('--img-height', px + 'px');
+        }
+
+        function populateDropdown(dropdown, defaultValue) {
+            const heights = generateHeights();
+            heights.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h;
+                opt.textContent = `${h.replace("'", "'")}"`;
+                if (h === defaultValue) opt.selected = true;
+                dropdown.appendChild(opt);
+            });
+        }
+
+        // Setup
+        const femaleImg = document.getElementById('female-img');
+        const maleImg = document.getElementById('male-img');
+        const femaleDropdown = document.getElementById('female-height');
+        const maleDropdown = document.getElementById('male-height');
+
+        populateDropdown(femaleDropdown, "5'7");
+        populateDropdown(maleDropdown, "5'7");
+
+        // Initial sizing after DOM is ready
+        function resizeAll() {
+            setImageHeight(femaleImg, femaleDropdown.value, FEMALE_IMG_PX);
+            setImageHeight(maleImg, maleDropdown.value, MALE_IMG_PX);
+        }
+        window.addEventListener('load', resizeAll);
+        window.addEventListener('resize', resizeAll);
+
+        femaleDropdown.addEventListener('change', resizeAll);
+        maleDropdown.addEventListener('change', resizeAll);
+    </script>
+</body>
+
+</html>
